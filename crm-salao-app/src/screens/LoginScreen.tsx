@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../routes'; // 👈 ajuste o caminho se necessário
+
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 export default function LoginScreen() {
     const { login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigation = useNavigation<NavigationProps>();
 
     async function handleLogin() {
         try {
             await login(email, password);
+            navigation.navigate('Appointments');
         } catch (err: any) {
             console.log('Login error:', err.response?.data || err.message);
             Alert.alert('Erro', err.response?.data?.message || 'Falha no login');
