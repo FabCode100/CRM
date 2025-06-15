@@ -44,9 +44,6 @@ export default function AppointmentDetails() {
             <Text style={styles.label}>Data:</Text>
             <Text style={styles.value}>{appointment.date}</Text>
 
-            <Text style={styles.label}>Hora:</Text>
-            <Text style={styles.value}>{appointment.time}</Text>
-
             {appointment.notes ? (
                 <>
                     <Text style={styles.label}>Observações:</Text>

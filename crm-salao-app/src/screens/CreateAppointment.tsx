@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet, ActivityIndicator } from 'react-native';
 import api from '../services/api';
-import { Picker } from '@react-native-picker/picker'; 
-import { useNavigation } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../routes/index.tsx';
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'CreateAppointment'>;
+type RouteProps = RouteProp<RootStackParamList, 'CreateAppointment'>;
 
 interface Client {
   id: number;
@@ -15,6 +16,7 @@ interface Client {
 
 export default function CreateAppointment() {
   const navigation = useNavigation<NavigationProps>();
+  const route = useRoute<RouteProps>();
 
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
@@ -29,6 +31,11 @@ export default function CreateAppointment() {
       try {
         const response = await api.get('/clients');
         setClients(response.data);
+
+        // 🟡 Seleciona automaticamente o cliente passado pela rota (se houver)
+        if (route.params?.client) {
+          setClientId(route.params.client.id);
+        }
       } catch (error) {
         Alert.alert('Erro', 'Não foi possível carregar clientes');
       } finally {
@@ -48,10 +55,10 @@ export default function CreateAppointment() {
     setLoadingCreate(true);
     try {
       await api.post('/appointments', {
-        date: `${date}T${time}:00Z`, 
+        date: `${date}T${time}:00Z`,
         service,
         clientId,
-        notes: '', 
+        notes: '',
       });
       Alert.alert('Sucesso', 'Agendamento criado!');
       navigation.goBack();

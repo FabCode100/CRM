@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Button, TouchableOpacity } from 'react-native';
 import api from '../services/api';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useFocusEffect, useNavigation, NavigationProp } from '@react-navigation/native';
 import type { RootStackParamList } from '../routes/index.tsx';
 
 
-type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Appointments'>;
+type NavigationProps = NavigationProp<RootStackParamList>;
 
 interface Appointment {
     id: number;
@@ -60,7 +59,6 @@ export default function AppointmentsList() {
                     </TouchableOpacity>
                 )}
             />
-            <Button title="Novo Agendamento" onPress={() => navigation.navigate('CreateAppointment')} />
         </View>
     );
 }
