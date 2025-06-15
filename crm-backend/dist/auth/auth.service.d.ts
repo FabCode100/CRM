@@ -9,8 +9,8 @@ export declare class AuthService {
         id: number;
         name: string;
         email: string;
-        createdAt: Date;
         role: string;
+        createdAt: Date;
     }>;
     login(dto: LoginUserDto): Promise<{
         access_token: string;

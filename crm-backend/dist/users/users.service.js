@@ -34,6 +34,9 @@ let UsersService = class UsersService {
     async findById(id) {
         return this.prisma.user.findUnique({ where: { id } });
     }
+    async findAll() {
+        return this.prisma.user.findMany();
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
