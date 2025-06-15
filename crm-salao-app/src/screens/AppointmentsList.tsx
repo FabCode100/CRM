@@ -1,6 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Button, TouchableOpacity } from 'react-native';
 import api from '../services/api';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../routes/index.tsx';
+
+
+type NavigationProps = NativeStackNavigationProp<RootStackParamList, 'Appointments'>;
 
 interface Appointment {
     id: number;
@@ -13,23 +19,28 @@ interface Appointment {
 }
 
 export default function AppointmentsList() {
+    const navigation = useNavigation<NavigationProps>();
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function fetchAppointments() {
-            try {
-                const response = await api.get('/appointments');
-                setAppointments(response.data);
-            } catch (err) {
-                console.error('Erro ao buscar agendamentos:', err);
-            } finally {
-                setLoading(false);
-            }
+    async function fetchAppointments() {
+        try {
+            setLoading(true);
+            const response = await api.get('/appointments');
+            setAppointments(response.data);
+        } catch (err) {
+            console.error('Erro ao buscar agendamentos:', err);
+        } finally {
+            setLoading(false);
         }
+    }
 
-        fetchAppointments();
-    }, []);
+    // Atualiza a lista sempre que a tela for focada
+    useFocusEffect(
+        useCallback(() => {
+            fetchAppointments();
+        }, [])
+    );
 
     if (loading) return <ActivityIndicator style={{ flex: 1 }} size="large" color="#000" />;
 
@@ -40,13 +51,16 @@ export default function AppointmentsList() {
                 data={appointments}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <View style={styles.card}>
-                        <Text style={styles.client}>{item.client?.name}</Text>
-                        <Text>{item.service}</Text>
-                        <Text>{item.date} às {item.time}</Text>
-                    </View>
+                    <TouchableOpacity onPress={() => navigation.navigate('AppointmentDetails', { appointment: item })}>
+                        <View style={styles.card}>
+                            <Text style={styles.client}>{item.client?.name}</Text>
+                            <Text>{item.service}</Text>
+                            <Text>{item.date} às {item.time}</Text>
+                        </View>
+                    </TouchableOpacity>
                 )}
             />
+            <Button title="Novo Agendamento" onPress={() => navigation.navigate('CreateAppointment')} />
         </View>
     );
 }
