@@ -127,7 +127,6 @@ export default function CreateAppointment() {
         value={date}
         onChangeText={setDate}
         style={[styles.input, errors.date && styles.inputError]}
-        keyboardType="numeric"
         returnKeyType="next"
         maxLength={10} // YYYY-MM-DD
       />
@@ -137,7 +136,6 @@ export default function CreateAppointment() {
         value={time}
         onChangeText={setTime}
         style={[styles.input, errors.time && styles.inputError]}
-        keyboardType="numeric"
         returnKeyType="next"
         maxLength={5} // HH:mm
       />

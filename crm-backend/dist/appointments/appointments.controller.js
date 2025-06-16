@@ -25,8 +25,8 @@ let AppointmentsController = class AppointmentsController {
     create(dto) {
         return this.appointmentsService.create(dto);
     }
-    findAll() {
-        return this.appointmentsService.findAll();
+    findAll(clientId, date, time) {
+        return this.appointmentsService.findAll(clientId, date, time);
     }
     findOne(id) {
         return this.appointmentsService.findOne(+id);
@@ -48,8 +48,11 @@ __decorate([
 ], AppointmentsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('clientId')),
+    __param(1, (0, common_1.Query)('date')),
+    __param(2, (0, common_1.Query)('time')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", void 0)
 ], AppointmentsController.prototype, "findAll", null);
 __decorate([

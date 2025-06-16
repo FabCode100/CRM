@@ -7,32 +7,32 @@ export declare class UsersService {
         id: number;
         name: string;
         email: string;
+        createdAt: Date;
         password: string;
         role: string;
-        createdAt: Date;
     }>;
     findByEmail(email: string): Promise<{
         id: number;
         name: string;
         email: string;
+        createdAt: Date;
         password: string;
         role: string;
-        createdAt: Date;
     } | null>;
     findById(id: number): Promise<{
         id: number;
         name: string;
         email: string;
+        createdAt: Date;
         password: string;
         role: string;
-        createdAt: Date;
     } | null>;
     findAll(): Promise<{
         id: number;
         name: string;
         email: string;
+        createdAt: Date;
         password: string;
         role: string;
-        createdAt: Date;
     }[]>;
 }

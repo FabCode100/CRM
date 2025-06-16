@@ -57,7 +57,7 @@ export default function EditAppointment() {
             const response = await api.get('/appointments', {
                 params: {
                     clientId: appointment.client.id,
-                    date,
+                    date: new Date(date).toISOString(),
                 },
             });
 
@@ -76,7 +76,7 @@ export default function EditAppointment() {
             // Se não houver conflito, atualiza
             await api.patch(`/appointments/${appointment.id}`, {
                 service,
-                date,
+                date: new Date(date).toISOString(),
                 notes,
                 clientId: appointment.client.id,
             });

@@ -180,7 +180,9 @@ export default function AppointmentsList() {
                         const statusStyle = getStatusStyle(item.status);
 
                         return (
-                            <View
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('AppointmentDetails', { appointment: item })}
+                                activeOpacity={0.85}
                                 style={[
                                     styles.card,
                                     { backgroundColor: statusStyle.backgroundColor },
@@ -230,7 +232,7 @@ export default function AppointmentsList() {
                                     <Icon name="schedule" size={16} color="#777" style={styles.icon} />
                                     <Text style={styles.date}>{formatDateTime(item.date)}</Text>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         );
                     }}
                 />
@@ -264,7 +266,7 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         flex: 1,
         marginRight: 10,
-        height: 50, 
+        height: 50,
         justifyContent: 'center',
     },
 

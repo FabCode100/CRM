@@ -1,10 +1,10 @@
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { UpdateAppointmentDto } from './dto/update-appointment.dto';
 export declare class AppointmentsService {
     private prisma;
     constructor(prisma: PrismaService);
-    create(data: CreateAppointmentDto): import(".prisma/client").Prisma.Prisma__AppointmentClient<{
+    create(dto: CreateAppointmentDto): import(".prisma/client").Prisma.Prisma__AppointmentClient<{
         id: number;
         createdAt: Date;
         date: Date;
@@ -13,7 +13,7 @@ export declare class AppointmentsService {
         notes: string | null;
         clientId: number;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
-    findAll(): import(".prisma/client").Prisma.PrismaPromise<({
+    findAll(clientId?: string, date?: string, time?: string): import(".prisma/client").Prisma.PrismaPromise<({
         client: {
             id: number;
             name: string;
@@ -47,7 +47,7 @@ export declare class AppointmentsService {
         notes: string | null;
         clientId: number;
     }) | null, null, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
-    update(id: number, data: UpdateAppointmentDto): import(".prisma/client").Prisma.Prisma__AppointmentClient<{
+    update(id: number, dto: UpdateAppointmentDto): import(".prisma/client").Prisma.Prisma__AppointmentClient<{
         id: number;
         createdAt: Date;
         date: Date;

@@ -13,7 +13,7 @@ export declare class AppointmentsController {
         notes: string | null;
         clientId: number;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
-    findAll(): import(".prisma/client").Prisma.PrismaPromise<({
+    findAll(clientId?: string, date?: string, time?: string): import(".prisma/client").Prisma.PrismaPromise<({
         client: {
             id: number;
             name: string;

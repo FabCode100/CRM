@@ -17,13 +17,27 @@ let AppointmentsService = class AppointmentsService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    create(data) {
-        return this.prisma.appointment.create({ data });
+    create(dto) {
+        return this.prisma.appointment.create({
+            data: dto,
+        });
     }
-    findAll() {
+    findAll(clientId, date, time) {
+        const filters = {};
+        if (clientId) {
+            filters.clientId = parseInt(clientId);
+        }
+        if (date) {
+            filters.date = date;
+        }
+        if (time) {
+            filters.time = time;
+        }
         return this.prisma.appointment.findMany({
-            include: { client: true },
-            orderBy: { date: 'asc' },
+            where: filters,
+            include: {
+                client: true,
+            },
         });
     }
     findOne(id) {
@@ -32,10 +46,10 @@ let AppointmentsService = class AppointmentsService {
             include: { client: true },
         });
     }
-    update(id, data) {
+    update(id, dto) {
         return this.prisma.appointment.update({
             where: { id },
-            data,
+            data: dto,
         });
     }
     remove(id) {

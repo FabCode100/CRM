@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Alert } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    Alert,
+    StyleSheet,
+    KeyboardAvoidingView,
+    Platform,
+} from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -24,24 +33,89 @@ export default function LoginScreen() {
     }
 
     return (
-        <View style={{ padding: 20 }}>
-            <Text style={{ fontSize: 24 }}>Login</Text>
-            <TextInput
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                style={{ borderBottomWidth: 1, marginBottom: 10 }}
-            />
-            <TextInput
-                placeholder="Senha"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                style={{ borderBottomWidth: 1, marginBottom: 10 }}
-            />
-            <Button title="Entrar" onPress={handleLogin} />
-        </View>
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+            <View style={styles.card}>
+                <Text style={styles.title}>Bem-vindo de volta 👋</Text>
+                <Text style={styles.subtitle}>Faça login para continuar</Text>
+
+                <TextInput
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={setEmail}
+                    autoCapitalize="none"
+                    keyboardType="email-address"
+                    style={styles.input}
+                    placeholderTextColor="#999"
+                />
+
+                <TextInput
+                    placeholder="Senha"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry
+                    style={styles.input}
+                    placeholderTextColor="#999"
+                />
+
+                <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                    <Text style={styles.buttonText}>Entrar</Text>
+                </TouchableOpacity>
+            </View>
+        </KeyboardAvoidingView>
     );
 }
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        justifyContent: 'center',
+        paddingHorizontal: 24,
+    },
+    card: {
+        backgroundColor: '#f5f5f5',
+        borderRadius: 16,
+        padding: 24,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.05,
+        shadowRadius: 10,
+        elevation: 3,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: '#222',
+        marginBottom: 6,
+    },
+    subtitle: {
+        fontSize: 16,
+        color: '#666',
+        marginBottom: 20,
+    },
+    input: {
+        height: 48,
+        borderColor: '#ddd',
+        borderWidth: 1,
+        borderRadius: 8,
+        paddingHorizontal: 12,
+        backgroundColor: '#fff',
+        marginBottom: 16,
+        fontSize: 16,
+        color: '#333',
+    },
+    button: {
+        backgroundColor: '#6200ee',
+        paddingVertical: 14,
+        borderRadius: 8,
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+});

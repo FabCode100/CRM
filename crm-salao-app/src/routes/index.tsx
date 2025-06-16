@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useAuth } from '../contexts/AuthContext';
 
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 import LoginScreen from '../screens/LoginScreen';
 import HomeScreen from '../screens/HomeScreen';
 import AppointmentsList from '../screens/AppointmentsList';
@@ -12,11 +14,14 @@ import AppointmentDetails from '../screens/AppointmentDetails';
 import EditAppointment from '../screens/EditAppointment';
 import ClientsList from '../screens/ClientList';
 import CreateClient from '../screens/CreateClient';
+import EditClient from '../screens/EditClient';
 
+// Tipagem das rotas principais
 export interface Appointment {
     id: number;
     date: string;
     service: string;
+    status?: string;
     notes?: string;
     clientId?: number;
     client: {
@@ -32,7 +37,6 @@ export interface Client {
     phone?: string;
 }
 
-// Tipagem das rotas principais
 export type RootStackParamList = {
     Login: undefined;
     Home: undefined;
@@ -41,9 +45,9 @@ export type RootStackParamList = {
     CreateClient: undefined;
     AppointmentDetails: { appointment: Appointment };
     EditAppointment: { appointment: Appointment };
+    EditClient: { client: Client };
 };
 
-// Tipagem das tabs
 export type TabParamList = {
     ClientsList: undefined;
     Appointments: undefined;
@@ -52,16 +56,43 @@ export type TabParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<TabParamList>();
 
-// Rotas da aba inferior
 function TabRoutes() {
+    let iconName: string;
     return (
-        <Tab.Navigator screenOptions={{ headerShown: false }}>
-            <Tab.Screen name="ClientsList" component={ClientsList} options={{ title: 'Clientes' }} />
-            <Tab.Screen name="Appointments" component={AppointmentsList} options={{ title: 'Agendamentos' }} />
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                headerShown: false,
+                tabBarActiveTintColor: '#6200ee',
+                tabBarInactiveTintColor: 'gray',
+
+                tabBarIcon: ({ focused, color, size }) => {
+
+
+                    if (route.name === 'ClientsList') {
+                        iconName = focused ? 'people' : 'people-outline';
+                    } else if (route.name === 'Appointments') {
+                        iconName = focused ? 'calendar' : 'calendar-outline';
+                    }
+
+                    return <Ionicons name={iconName} size={size} color={color} />;
+                },
+            })}
+        >
+            <Tab.Screen
+                name="ClientsList"
+                component={ClientsList}
+                options={{ title: 'Clientes' }}
+            />
+            <Tab.Screen
+                name="Appointments"
+                component={AppointmentsList}
+                options={{ title: 'Agendamentos' }}
+            />
         </Tab.Navigator>
     );
 }
 
+// 👉 Rotas principais com login e tabs
 export default function Routes() {
     const { token } = useAuth();
 
@@ -75,6 +106,7 @@ export default function Routes() {
                 <Stack.Screen name="AppointmentDetails" component={AppointmentDetails} options={{ title: 'Detalhes do Agendamento' }} />
                 <Stack.Screen name="EditAppointment" component={EditAppointment} options={{ title: 'Editar Agendamento' }} />
                 <Stack.Screen name="CreateClient" component={CreateClient} options={{ title: 'Novo Cliente' }} />
+                <Stack.Screen name="EditClient" component={EditClient} options={{ title: 'Editar Cliente' }} />
             </Stack.Navigator>
         </NavigationContainer>
     );

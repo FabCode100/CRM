@@ -7,16 +7,16 @@ export declare class UsersController {
         id: number;
         name: string;
         email: string;
+        createdAt: Date;
         password: string;
         role: string;
-        createdAt: Date;
     }>;
     findAll(): Promise<{
         id: number;
         name: string;
         email: string;
+        createdAt: Date;
         password: string;
         role: string;
-        createdAt: Date;
     }[]>;
 }
