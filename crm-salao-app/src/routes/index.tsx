@@ -19,6 +19,7 @@ import Reports from '../screens/Reports';
 
 // Tipagem das rotas principais
 export interface Appointment {
+    price?: number;
     id: number;
     date: string;
     service: string;

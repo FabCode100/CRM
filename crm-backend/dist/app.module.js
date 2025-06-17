@@ -15,12 +15,13 @@ const clients_module_1 = require("./clients/clients.module");
 const appointments_module_1 = require("./appointments/appointments.module");
 const users_module_1 = require("./users/users.module");
 const auth_module_1 = require("./auth/auth.module");
+const twilio_module_1 = require("./twilio/twilio.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, clients_module_1.ClientsModule, appointments_module_1.AppointmentsModule, auth_module_1.AuthModule, users_module_1.UsersModule],
+        imports: [prisma_module_1.PrismaModule, clients_module_1.ClientsModule, appointments_module_1.AppointmentsModule, auth_module_1.AuthModule, users_module_1.UsersModule, twilio_module_1.TwilioModule],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
     })

@@ -4,6 +4,7 @@ exports.UpdateAppointmentDto = void 0;
 class UpdateAppointmentDto {
     date;
     service;
+    price;
     status;
     notes;
     clientId;

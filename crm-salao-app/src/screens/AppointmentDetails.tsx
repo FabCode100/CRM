@@ -91,7 +91,16 @@ export default function AppointmentDetails() {
                     <Text style={styles.label}>Serviço:</Text>
                 </View>
                 <Text style={styles.value}>{appointment.service}</Text>
-
+                <View style={styles.row}>
+                    <Icon name="attach-money" size={20} color="#555" style={styles.icon} />
+                    <Text style={styles.label}>Preço:</Text>
+                </View>
+                <Text style={styles.value}>
+                    {appointment.price?.toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
+                    }) ?? 'Não informado'}
+                </Text>
                 <View style={styles.row}>
                     <Icon name="schedule" size={20} color="#555" style={styles.icon} />
                     <Text style={styles.label}>Data:</Text>

@@ -1,1 +1,1 @@
-{"version":3,"file":"create-appointment.dto.js","sourceRoot":"","sources":["../../../src/appointments/dto/create-appointment.dto.ts"],"names":[],"mappings":";;;AAAA,MAAa,oBAAoB;IAC/B,IAAI,CAAO;IACX,OAAO,CAAS;IAChB,MAAM,CAAU;IAChB,KAAK,CAAU;IACf,QAAQ,CAAS;CAClB;AAND,oDAMC"}
+{"version":3,"file":"create-appointment.dto.js","sourceRoot":"","sources":["../../../src/appointments/dto/create-appointment.dto.ts"],"names":[],"mappings":";;;AAAA,MAAa,oBAAoB;IAC/B,IAAI,CAAO;IACX,OAAO,CAAS;IAChB,KAAK,CAAU;IACf,MAAM,CAAU;IAChB,KAAK,CAAU;IACf,QAAQ,CAAS;CAClB;AAPD,oDAOC"}

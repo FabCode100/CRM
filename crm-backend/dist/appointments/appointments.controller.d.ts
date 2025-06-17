@@ -9,6 +9,7 @@ export declare class AppointmentsController {
         createdAt: Date;
         date: Date;
         service: string;
+        price: number | null;
         status: string;
         notes: string | null;
         clientId: number;
@@ -26,6 +27,7 @@ export declare class AppointmentsController {
         createdAt: Date;
         date: Date;
         service: string;
+        price: number | null;
         status: string;
         notes: string | null;
         clientId: number;
@@ -43,6 +45,7 @@ export declare class AppointmentsController {
         createdAt: Date;
         date: Date;
         service: string;
+        price: number | null;
         status: string;
         notes: string | null;
         clientId: number;
@@ -52,6 +55,7 @@ export declare class AppointmentsController {
         createdAt: Date;
         date: Date;
         service: string;
+        price: number | null;
         status: string;
         notes: string | null;
         clientId: number;
@@ -61,6 +65,7 @@ export declare class AppointmentsController {
         createdAt: Date;
         date: Date;
         service: string;
+        price: number | null;
         status: string;
         notes: string | null;
         clientId: number;

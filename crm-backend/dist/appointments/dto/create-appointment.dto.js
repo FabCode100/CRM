@@ -4,6 +4,7 @@ exports.CreateAppointmentDto = void 0;
 class CreateAppointmentDto {
     date;
     service;
+    price;
     status;
     notes;
     clientId;

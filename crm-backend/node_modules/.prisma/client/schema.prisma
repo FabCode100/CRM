@@ -26,6 +26,7 @@ model Appointment {
   id        Int      @id @default(autoincrement())
   date      DateTime
   service   String
+  price     Float?
   status    String   @default("pendente") // opções: pendente, concluído, cancelado
   notes     String?
   clientId  Int

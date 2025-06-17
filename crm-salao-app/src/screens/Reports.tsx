@@ -9,12 +9,14 @@ import {
 } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
 import api from '../services/api';
 import type { Appointment } from '../routes/index';
 
 export default function Dashboard() {
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [refreshing, setRefreshing] = useState(false);
+    const [selectedClient, setSelectedClient] = useState<string | null>(null);
     const { width: screenWidth } = useWindowDimensions();
 
     async function fetchAppointments() {
@@ -44,37 +46,54 @@ export default function Dashboard() {
 
     const serviceCounts: Record<string, number> = {};
     const clientCounts: Record<string, number> = {};
+    const clientServices: Record<string, Record<string, number>> = {};
+
     appointments.forEach((appt) => {
-        serviceCounts[appt.service] = (serviceCounts[appt.service] || 0) + 1;
-        const name = appt.client?.name || 'Desconhecido';
-        clientCounts[name] = (clientCounts[name] || 0) + 1;
+        const service = appt.service;
+        const clientName = appt.client?.name || 'Desconhecido';
+
+        serviceCounts[service] = (serviceCounts[service] || 0) + 1;
+        clientCounts[clientName] = (clientCounts[clientName] || 0) + 1;
+
+        if (!clientServices[clientName]) {
+            clientServices[clientName] = {};
+        }
+        clientServices[clientName][service] = (clientServices[clientName][service] || 0) + 1;
     });
 
-    // Limitar a top 3 serviços para o gráfico
     const top3Services = Object.entries(serviceCounts)
         .sort(([, a], [, b]) => b - a)
         .slice(0, 3);
     const limitedServiceCounts = Object.fromEntries(top3Services);
 
-    function getBarChartData(counts: Record<string, number>) {
-        return {
-            labels: Object.keys(counts),
-            datasets: [{ data: Object.values(counts) }],
-        };
-    }
-
-    const statusData = getBarChartData({
-        pendente: statusCounts.pendente,
-        concluido: statusCounts.concluido,
-        cancelado: statusCounts.cancelado,
-    });
-
-    const serviceData = getBarChartData(limitedServiceCounts);
-
     const sortedClients = Object.entries(clientCounts)
         .sort(([, a], [, b]) => b - a)
         .slice(0, 5);
-    const clientData = getBarChartData(Object.fromEntries(sortedClients));
+    const clientData = {
+        labels: sortedClients.map(([name]) => name),
+        datasets: [{ data: sortedClients.map(([, count]) => count) }],
+    };
+
+    const statusData = {
+        labels: ['Pendente', 'Concluído', 'Cancelado'],
+        datasets: [{ data: [statusCounts.pendente, statusCounts.concluido, statusCounts.cancelado] }],
+    };
+
+    const serviceData = {
+        labels: Object.keys(limitedServiceCounts),
+        datasets: [{ data: Object.values(limitedServiceCounts) }],
+    };
+
+    const selectedClientServiceData = selectedClient && clientServices[selectedClient]
+        ? {
+            labels: Object.keys(clientServices[selectedClient]),
+            datasets: [
+                {
+                    data: Object.values(clientServices[selectedClient]),
+                },
+            ],
+        }
+        : { labels: [], datasets: [{ data: [] }] };
 
     const chartWidth = screenWidth - 48;
 
@@ -95,10 +114,10 @@ export default function Dashboard() {
     return (
         <ScrollView
             contentContainerStyle={styles.container}
-            refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={fetchAppointments} />
-            }
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchAppointments} />}
         >
+            <Text style={styles.sectionTitle}>Dashboard</Text>
+
             <View style={styles.cardsContainer}>
                 <View style={[styles.card, styles.cardTotal]}>
                     <MaterialCommunityIcons name="calendar-check" size={36} color="#fff" />
@@ -122,22 +141,17 @@ export default function Dashboard() {
                 </View>
             </View>
 
-            {/* Gráficos */}
             <View style={styles.chartSection}>
                 <Text style={styles.sectionTitle}>Agendamentos por Status</Text>
                 <BarChart
                     data={statusData}
                     width={chartWidth}
                     height={220}
-                    yAxisInterval={1}
                     chartConfig={chartConfig}
                     verticalLabelRotation={0}
                     fromZero
                     style={styles.chart}
-                    showValuesOnTopOfBars
-                    yAxisLabel={''}
-                    yAxisSuffix={''}
-                />
+                    showValuesOnTopOfBars yAxisLabel={''} yAxisSuffix={''}                />
             </View>
 
             <View style={styles.chartSection}>
@@ -146,7 +160,6 @@ export default function Dashboard() {
                     data={serviceData}
                     width={chartWidth}
                     height={220}
-                    yAxisInterval={1}
                     chartConfig={{
                         ...chartConfig,
                         color: (opacity = 1) => `rgba(0, 150, 136, ${opacity})`,
@@ -154,10 +167,7 @@ export default function Dashboard() {
                     verticalLabelRotation={0}
                     fromZero
                     style={styles.chart}
-                    showValuesOnTopOfBars
-                    yAxisLabel={''}
-                    yAxisSuffix={''}
-                />
+                    showValuesOnTopOfBars yAxisLabel={''} yAxisSuffix={''}                />
             </View>
 
             <View style={styles.chartSection}>
@@ -166,7 +176,6 @@ export default function Dashboard() {
                     data={clientData}
                     width={chartWidth}
                     height={220}
-                    yAxisInterval={1}
                     chartConfig={{
                         ...chartConfig,
                         color: (opacity = 1) => `rgba(255, 87, 34, ${opacity})`,
@@ -174,10 +183,41 @@ export default function Dashboard() {
                     verticalLabelRotation={0}
                     fromZero
                     style={styles.chart}
-                    showValuesOnTopOfBars
-                    yAxisLabel={''}
-                    yAxisSuffix={''}
-                />
+                    showValuesOnTopOfBars yAxisLabel={''} yAxisSuffix={''}                />
+            </View>
+
+            <View style={styles.chartSection}>
+                <Text style={styles.sectionTitle}>Filtrar Serviços por Cliente</Text>
+                <Picker
+                    selectedValue={selectedClient}
+                    onValueChange={(itemValue) => setSelectedClient(itemValue)}
+                    style={{ backgroundColor: '#f0f0f0', borderRadius: 8 }}
+                >
+                    <Picker.Item label="Selecione um cliente" value={null} />
+                    {Object.keys(clientCounts).map((clientName) => (
+                        <Picker.Item key={clientName} label={clientName} value={clientName} />
+                    ))}
+                </Picker>
+
+                {selectedClient && (
+                    <>
+                        <Text style={[styles.sectionTitle, { marginTop: 16 }]}>
+                            Serviços mais realizados por {selectedClient}
+                        </Text>
+                        <BarChart
+                            data={selectedClientServiceData}
+                            width={chartWidth}
+                            height={220}
+                            chartConfig={{
+                                ...chartConfig,
+                                color: (opacity = 1) => `rgba(255, 193, 7, ${opacity})`,
+                            }}
+                            verticalLabelRotation={0}
+                            fromZero
+                            style={styles.chart}
+                            showValuesOnTopOfBars yAxisLabel={''} yAxisSuffix={''}                        />
+                    </>
+                )}
             </View>
         </ScrollView>
     );
@@ -218,15 +258,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: 24,
     },
-    cardPendente: {
-        backgroundColor: '#ffe066',
-    },
-    cardConcluido: {
-        backgroundColor: '#51cf66',
-    },
-    cardCancelado: {
-        backgroundColor: '#ff6b6b',
-    },
+    cardPendente: { backgroundColor: '#ffe066' },
+    cardConcluido: { backgroundColor: '#51cf66' },
+    cardCancelado: { backgroundColor: '#ff6b6b' },
     cardTitle: {
         color: '#fff',
         fontWeight: '600',
@@ -257,7 +291,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#333',
         marginBottom: 12,
-        paddingHorizontal: 4,
     },
     chart: {
         borderRadius: 16,
