@@ -15,13 +15,14 @@ import EditAppointment from '../screens/EditAppointment';
 import ClientsList from '../screens/ClientList';
 import CreateClient from '../screens/CreateClient';
 import EditClient from '../screens/EditClient';
+import Reports from '../screens/Reports';
 
 // Tipagem das rotas principais
 export interface Appointment {
     id: number;
     date: string;
     service: string;
-    status?: string;
+    status: 'pendente' | 'concluido' | 'cancelado'; 
     notes?: string;
     clientId?: number;
     client: {
@@ -51,6 +52,7 @@ export type RootStackParamList = {
 export type TabParamList = {
     ClientsList: undefined;
     Appointments: undefined;
+    Reports: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -72,6 +74,8 @@ function TabRoutes() {
                         iconName = focused ? 'people' : 'people-outline';
                     } else if (route.name === 'Appointments') {
                         iconName = focused ? 'calendar' : 'calendar-outline';
+                    } else if (route.name === 'Reports') {
+                        iconName = focused ? 'bar-chart' : 'bar-chart-outline';
                     }
 
                     return <Ionicons name={iconName} size={size} color={color} />;
@@ -87,6 +91,11 @@ function TabRoutes() {
                 name="Appointments"
                 component={AppointmentsList}
                 options={{ title: 'Agendamentos' }}
+            />
+            <Tab.Screen
+                name="Reports"
+                component={Reports}
+                options={{ title: 'Relatórios' }}
             />
         </Tab.Navigator>
     );
