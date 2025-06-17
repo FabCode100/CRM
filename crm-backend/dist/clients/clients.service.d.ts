@@ -10,6 +10,7 @@ export declare class ClientsService {
         email: string;
         phone: string | null;
         createdAt: Date;
+        birthday: Date | null;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     findAll(): import(".prisma/client").Prisma.PrismaPromise<{
         id: number;
@@ -17,6 +18,7 @@ export declare class ClientsService {
         email: string;
         phone: string | null;
         createdAt: Date;
+        birthday: Date | null;
     }[]>;
     findOne(id: number): import(".prisma/client").Prisma.Prisma__ClientClient<{
         id: number;
@@ -24,6 +26,7 @@ export declare class ClientsService {
         email: string;
         phone: string | null;
         createdAt: Date;
+        birthday: Date | null;
     } | null, null, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     update(id: number, data: UpdateClientDto): import(".prisma/client").Prisma.Prisma__ClientClient<{
         id: number;
@@ -31,6 +34,7 @@ export declare class ClientsService {
         email: string;
         phone: string | null;
         createdAt: Date;
+        birthday: Date | null;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
     remove(id: number): import(".prisma/client").Prisma.Prisma__ClientClient<{
         id: number;
@@ -38,5 +42,6 @@ export declare class ClientsService {
         email: string;
         phone: string | null;
         createdAt: Date;
+        birthday: Date | null;
     }, never, import("@prisma/client/runtime/library").DefaultArgs, import(".prisma/client").Prisma.PrismaClientOptions>;
 }

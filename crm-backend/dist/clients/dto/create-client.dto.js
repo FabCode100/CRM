@@ -5,6 +5,7 @@ class CreateClientDto {
     name;
     email;
     phone;
+    birthday;
 }
 exports.CreateClientDto = CreateClientDto;
 //# sourceMappingURL=create-client.dto.js.map

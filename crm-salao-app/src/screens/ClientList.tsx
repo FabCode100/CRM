@@ -13,16 +13,16 @@ import {
 import api from '../services/api';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../routes/index';
+import type { Client, RootStackParamList } from '../routes/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 type NavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
-interface Client {
-  id: number;
-  name: string;
-  email?: string;
-  phone?: string;
+
+function formatDateBR(dateString: string) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('pt-BR');
 }
 
 export default function ClientsList() {
@@ -30,6 +30,7 @@ export default function ClientsList() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  
 
   useEffect(() => {
     fetchClients();
@@ -100,15 +101,11 @@ export default function ClientsList() {
         keyExtractor={(item) => item.id.toString()}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         contentContainerStyle={clients.length === 0 && { flexGrow: 1, justifyContent: 'center' }}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>Nenhum cliente encontrado.</Text>
-        }
+        ListEmptyComponent={<Text style={styles.emptyText}>Nenhum cliente encontrado.</Text>}
         renderItem={({ item }) => (
           <View style={styles.cardTouchable}>
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('CreateAppointment', { client: item })
-              }
+              onPress={() => navigation.navigate('CreateAppointment', { client: item })}
               style={styles.cardContent}
               activeOpacity={0.8}
             >
@@ -116,6 +113,9 @@ export default function ClientsList() {
                 <Text style={styles.name}>{item.name}</Text>
                 {item.email && <Text style={styles.info}>📧 {item.email}</Text>}
                 {item.phone && <Text style={styles.info}>📞 {item.phone}</Text>}
+                {item.birthday && (
+                  <Text style={styles.info}>🎂 {formatDateBR(item.birthday)}</Text>
+                )}
               </View>
             </TouchableOpacity>
 

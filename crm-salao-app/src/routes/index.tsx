@@ -33,6 +33,7 @@ export interface Appointment {
 }
 
 export interface Client {
+    birthday: string;
     id: number;
     name: string;
     email?: string;

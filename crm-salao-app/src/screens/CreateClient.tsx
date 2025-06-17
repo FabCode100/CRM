@@ -35,12 +35,43 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function isValidDate(dateStr: string) {
+  // Verifica formato dd/mm/yyyy
+  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) return false;
+
+  const [day, month, year] = dateStr.split('/').map(Number);
+  const date = new Date(year, month - 1, day);
+  return (
+    date.getFullYear() === year &&
+    date.getMonth() === month - 1 &&
+    date.getDate() === day
+  );
+}
+
+function formatDateBR(text: string): string {
+  const cleaned = text.replace(/\D/g, '').slice(0, 8);
+  let formatted = '';
+  if (cleaned.length > 0) formatted += cleaned.substring(0, 2);
+  if (cleaned.length >= 3) formatted += '/' + cleaned.substring(2, 4);
+  if (cleaned.length >= 5) formatted += '/' + cleaned.substring(4, 8);
+  return formatted;
+}
+
+function convertDateBRtoISO(dateBR: string | null): string | null {
+  if (!dateBR) return null;
+  const [day, month, year] = dateBR.split('/');
+  if (!day || !month || !year) return null;
+  const date = new Date(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T00:00:00.000Z`);
+  return date.toISOString();
+}
+
 export default function CreateClient() {
   const navigation = useNavigation<NavigationProps>();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
+  const [birthday, setBirthday] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const [loading, setLoading] = useState(false);
 
@@ -53,6 +84,7 @@ export default function CreateClient() {
       name: !name.trim(),
       email: !email.trim() || !isValidEmail(email),
       phone: !phone.trim() || phone.replace(/\D/g, '').length < 10,
+      birthday: birthday.trim() !== '' && !isValidDate(birthday),
     };
     setErrors(newErrors);
     return !Object.values(newErrors).includes(true);
@@ -70,6 +102,7 @@ export default function CreateClient() {
         name,
         email,
         phone: phone.replace(/\D/g, ''),
+        birthday: birthday.trim() === '' ? null : convertDateBRtoISO(birthday),
       });
       Alert.alert('Sucesso', 'Cliente cadastrado com sucesso!');
       navigation.goBack();
@@ -85,6 +118,7 @@ export default function CreateClient() {
     setName('');
     setEmail('');
     setPhone('');
+    setBirthday('');
     setErrors({});
   }
 
@@ -125,8 +159,18 @@ export default function CreateClient() {
           onChangeText={handlePhoneChange}
           keyboardType="phone-pad"
           style={[styles.input, errors.phone && styles.inputError]}
-          returnKeyType="done"
+          returnKeyType="next"
           maxLength={15}
+        />
+
+        <TextInput
+          placeholder="Data de Aniversário (dd/mm/yyyy)"
+          value={birthday}
+          onChangeText={(text) => setBirthday(formatDateBR(text))}
+          keyboardType="numeric"
+          style={[styles.input, errors.birthday && styles.inputError]}
+          returnKeyType="done"
+          maxLength={10}
         />
 
         <TouchableOpacity

@@ -19,6 +19,7 @@ model Client {
   email        String        @unique
   phone        String?
   createdAt    DateTime      @default(now())
+  birthday     DateTime?
   appointments Appointment[]
 }
 

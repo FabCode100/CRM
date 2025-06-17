@@ -5,6 +5,7 @@ class UpdateClientDto {
     name;
     email;
     phone;
+    birthday;
 }
 exports.UpdateClientDto = UpdateClientDto;
 //# sourceMappingURL=update-client.dto.js.map

@@ -35,6 +35,7 @@ export default function Dashboard() {
         fetchAppointments();
     }, []);
 
+    // Contagem status
     const statusCounts = appointments.reduce(
         (acc, appt) => {
             acc.total++;
@@ -44,9 +45,13 @@ export default function Dashboard() {
         { total: 0, pendente: 0, concluido: 0, cancelado: 0 }
     );
 
+    // Contagem serviços, clientes e serviços por cliente
     const serviceCounts: Record<string, number> = {};
     const clientCounts: Record<string, number> = {};
     const clientServices: Record<string, Record<string, number>> = {};
+
+    // Para top 3 clientes por valor acumulado (price)
+    const clientPriceSums: Record<string, number> = {};
 
     appointments.forEach((appt) => {
         const service = appt.service;
@@ -59,19 +64,34 @@ export default function Dashboard() {
             clientServices[clientName] = {};
         }
         clientServices[clientName][service] = (clientServices[clientName][service] || 0) + 1;
+
+        // Soma preço por cliente
+        const price = typeof appt.price === 'number' ? appt.price : 0;
+        clientPriceSums[clientName] = (clientPriceSums[clientName] || 0) + price;
     });
 
+    // Top 3 serviços
     const top3Services = Object.entries(serviceCounts)
         .sort(([, a], [, b]) => b - a)
         .slice(0, 3);
     const limitedServiceCounts = Object.fromEntries(top3Services);
 
+    // Top 5 clientes por número de agendamentos
     const sortedClients = Object.entries(clientCounts)
         .sort(([, a], [, b]) => b - a)
         .slice(0, 5);
     const clientData = {
         labels: sortedClients.map(([name]) => name),
         datasets: [{ data: sortedClients.map(([, count]) => count) }],
+    };
+
+    // Top 3 clientes por valor acumulado
+    const top3ClientsByPrice = Object.entries(clientPriceSums)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 3);
+    const clientPriceData = {
+        labels: top3ClientsByPrice.map(([name]) => name),
+        datasets: [{ data: top3ClientsByPrice.map(([, totalPrice]) => totalPrice) }],
     };
 
     const statusData = {
@@ -151,7 +171,10 @@ export default function Dashboard() {
                     verticalLabelRotation={0}
                     fromZero
                     style={styles.chart}
-                    showValuesOnTopOfBars yAxisLabel={''} yAxisSuffix={''}                />
+                    showValuesOnTopOfBars
+                    yAxisLabel={''}
+                    yAxisSuffix={''}
+                />
             </View>
 
             <View style={styles.chartSection}>
@@ -167,11 +190,14 @@ export default function Dashboard() {
                     verticalLabelRotation={0}
                     fromZero
                     style={styles.chart}
-                    showValuesOnTopOfBars yAxisLabel={''} yAxisSuffix={''}                />
+                    showValuesOnTopOfBars
+                    yAxisLabel={''}
+                    yAxisSuffix={''}
+                />
             </View>
 
             <View style={styles.chartSection}>
-                <Text style={styles.sectionTitle}>Top 5 Clientes</Text>
+                <Text style={styles.sectionTitle}>Top 5 Clientes (Número de Agendamentos)</Text>
                 <BarChart
                     data={clientData}
                     width={chartWidth}
@@ -183,7 +209,30 @@ export default function Dashboard() {
                     verticalLabelRotation={0}
                     fromZero
                     style={styles.chart}
-                    showValuesOnTopOfBars yAxisLabel={''} yAxisSuffix={''}                />
+                    showValuesOnTopOfBars
+                    yAxisLabel={''}
+                    yAxisSuffix={''}
+                />
+            </View>
+
+            {/* NOVO GRÁFICO ADICIONADO */}
+            <View style={styles.chartSection}>
+                <Text style={styles.sectionTitle}>Top 3 Clientes por Valor Acumulado (R$)</Text>
+                <BarChart
+                    data={clientPriceData}
+                    width={chartWidth}
+                    height={220}
+                    chartConfig={{
+                        ...chartConfig,
+                        color: (opacity = 1) => `rgba(255, 193, 7, ${opacity})`,
+                    }}
+                    verticalLabelRotation={0}
+                    fromZero
+                    style={styles.chart}
+                    showValuesOnTopOfBars
+                    yAxisLabel="R$ "
+                    yAxisSuffix=""
+                />
             </View>
 
             <View style={styles.chartSection}>
@@ -215,7 +264,10 @@ export default function Dashboard() {
                             verticalLabelRotation={0}
                             fromZero
                             style={styles.chart}
-                            showValuesOnTopOfBars yAxisLabel={''} yAxisSuffix={''}                        />
+                            showValuesOnTopOfBars
+                            yAxisLabel={''}
+                            yAxisSuffix={''}
+                        />
                     </>
                 )}
             </View>

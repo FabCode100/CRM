@@ -21,6 +21,7 @@ export declare class AppointmentsService {
             email: string;
             phone: string | null;
             createdAt: Date;
+            birthday: Date | null;
         };
     } & {
         id: number;
@@ -39,6 +40,7 @@ export declare class AppointmentsService {
             email: string;
             phone: string | null;
             createdAt: Date;
+            birthday: Date | null;
         };
     } & {
         id: number;
